@@ -7,7 +7,7 @@ let correctWords = [];
 let wrongWords = [];
 
 // 你的公開 Google 試算表 CSV 連結
-const sheetUrl = "https://docs.google.com/spreadsheets/d/你的試算表ID/gviz/tq?tqx=out:csv";
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
 
 // 載入資料
 function loadData() {
