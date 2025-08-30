@@ -1,27 +1,91 @@
+/* 全域字體與版面 */
 body { 
   font-family: sans-serif; 
   text-align: center; 
-  margin: 50px; 
+  margin: 20px;
+  padding: 0;
 }
 
+h1, h3 {
+  margin: 10px 0;
+}
+
+/* 容器最大寬度，保持中央對齊 */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* 單字區塊 */
 #word { 
   font-size: 2em; 
-  margin: 20px; 
+  margin: 20px 0;
+  word-wrap: break-word;
+}
+
+/* 選項按鈕 */
+#options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .option { 
-  display: block; 
-  margin: 10px auto; 
+  flex: 1 1 40%; /* 最小 40% 寬度，剩餘空間自動調整 */
+  min-width: 120px;
+  max-width: 200px;
   padding: 10px; 
-  width: 200px; 
   font-size: 1em; 
+  cursor: pointer;
 }
 
+/* 結果文字 */
 #result { 
   margin: 20px; 
   font-size: 1.2em; 
 }
 
+/* 下拉選單與模式選單容器 */
+.select-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#typeSelect, #modeSelect {
+  flex: 1 1 150px;
+  min-width: 120px;
+  padding: 5px;
+  font-size: 1em;
+}
+
+/* 快速切換按鈕 */
+#typeButtons button {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* 統計區塊 */
+#stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+#stats div {
+  margin: 10px;
+  flex: 1 1 200px;
+  min-width: 150px;
+}
+
+/* 列表 */
 ul { 
   list-style: none; 
   padding: 0; 
@@ -31,7 +95,18 @@ li {
   margin: 2px 0; 
 }
 
-#typeButtons button {
-  margin: 5px;
-  padding: 5px 10px;
+/* RWD 調整：手機或小螢幕 */
+@media (max-width: 768px) {
+  #word {
+    font-size: 1.5em;
+  }
+
+  #options button {
+    flex: 1 1 80%;
+    font-size: 0.9em;
+  }
+
+  #stats div {
+    flex: 1 1 100%;
+  }
 }
