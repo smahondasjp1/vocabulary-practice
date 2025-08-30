@@ -1,4 +1,4 @@
-const sheetUrl = "https://docs.google.com/spreadsheets/d/【試算表ID】/gviz/tq?tqx=out:csv";
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
 
 let words = [];
 let filteredWords = [];
