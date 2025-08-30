@@ -1,12 +1,13 @@
-const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
-
-let words = [];
-let filteredWords = [];
+let words = [];             // 所有單字
+let filteredWords = [];     // 篩選後單字
 let currentAnswer = "";
 let correctCount = 0;
 let wrongCount = 0;
 let correctWords = [];
 let wrongWords = [];
+
+// 你的公開 Google 試算表 CSV 連結
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
 
 // 載入資料
 function loadData() {
@@ -15,39 +16,58 @@ function loadData() {
     header: true,
     skipEmptyLines: true,
     complete: function(results) {
-      words = results.data.map(row => ({
-        word: row.word,
-        meaning: row.meaning,
-        type: row.type
+      words = results.data.map(item => ({
+        word: item.word.trim(),
+        meaning: item.meaning.trim(),
+        type: item.type.trim()
       }));
-
-      // 建立下拉選單
-      const select = document.getElementById("typeSelect");
-      const types = ["all", ...new Set(words.map(w => w.type))];
-      types.forEach(t => {
-        const option = document.createElement("option");
-        option.value = t;
-        option.textContent = t;
-        select.appendChild(option);
-      });
-      select.disabled = false; // 啟用下拉選單
-
       filteredWords = [...words];
+
+      // 建立下拉選單和快速按鈕
+      createTypeSelect();
+      createTypeButtons();
+
+      // 顯示第一題
       nextWord();
-      createTypeButtons(); // 建立快速切換按鈕
     },
     error: function(err) {
       document.getElementById("word").textContent = "資料載入失敗";
-      console.error(err);
+      console.error("PapaParse Error:", err);
     }
   });
 }
 
-// 篩選單字種類
-function filterByType() {
+// 建立下拉選單
+function createTypeSelect() {
   const select = document.getElementById("typeSelect");
-  const value = select.value;
-  filteredWords = value === "all" ? [...words] : words.filter(w => w.type === value);
+  select.disabled = false;
+  select.innerHTML = "";
+
+  const types = ["all", ...new Set(words.map(w => w.type))];
+  types.forEach(t => {
+    const option = document.createElement("option");
+    option.value = t;
+    option.textContent = t === "all" ? "全部" : t;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("change", filterByType);
+}
+
+// 篩選單字
+function filterByType() {
+  const value = document.getElementById("typeSelect").value.trim();
+  filteredWords = value === "all"
+    ? [...words]
+    : words.filter(w => w.type.trim() === value);
+
+  if (!filteredWords || filteredWords.length === 0) {
+    document.getElementById("word").textContent = "此類別沒有單字";
+    document.getElementById("options").innerHTML = "";
+    document.getElementById("result").textContent = "";
+    return;
+  }
+
   nextWord();
 }
 
@@ -60,19 +80,17 @@ function nextWord() {
     return;
   }
 
-  document.getElementById("result").textContent = "";
-
   const item = filteredWords[Math.floor(Math.random() * filteredWords.length)];
   currentAnswer = item.meaning;
   document.getElementById("word").textContent = item.word;
 
-  // 建立選項
+  // 生成 4 個選項
   let options = [item.meaning];
   while (options.length < 4) {
     const rand = filteredWords[Math.floor(Math.random() * filteredWords.length)].meaning;
     if (!options.includes(rand)) options.push(rand);
   }
-  options = options.sort(() => Math.random() - 0.5);
+  options.sort(() => Math.random() - 0.5);
 
   const optionsDiv = document.getElementById("options");
   optionsDiv.innerHTML = "";
@@ -83,6 +101,8 @@ function nextWord() {
     btn.onclick = () => checkAnswer(opt, item.word);
     optionsDiv.appendChild(btn);
   });
+
+  document.getElementById("result").textContent = "";
 }
 
 // 檢查答案
@@ -97,11 +117,8 @@ function checkAnswer(selected, word) {
     if (!wrongWords.includes(word)) wrongWords.push(word);
   }
 
-  // 更新統計
   document.getElementById("correctCount").textContent = correctCount;
   document.getElementById("wrongCount").textContent = wrongCount;
-
-  // 更新列表
   document.getElementById("correctList").innerHTML = correctWords.map(w => `<li>${w}</li>`).join("");
   document.getElementById("wrongList").innerHTML = wrongWords.map(w => `<li>${w}</li>`).join("");
 }
@@ -118,11 +135,11 @@ function resetLists() {
 function createTypeButtons() {
   const container = document.getElementById("typeButtons");
   container.innerHTML = "";
-
   const types = ["all", ...new Set(words.map(w => w.type))];
+
   types.forEach(t => {
     const btn = document.createElement("button");
-    btn.textContent = t === "all" ? "全部單字" : t;
+    btn.textContent = t === "all" ? "全部" : t;
     btn.onclick = () => {
       document.getElementById("typeSelect").value = t;
       filterByType();
