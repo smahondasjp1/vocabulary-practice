@@ -1,13 +1,16 @@
-let words = [];             // 所有單字
-let filteredWords = [];     // 篩選後單字
+let words = [];
+let filteredWords = [];
 let currentAnswer = "";
 let correctCount = 0;
 let wrongCount = 0;
 let correctWords = [];
 let wrongWords = [];
 
-// 你的公開 Google 試算表 CSV 連結
-const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
+let practiceMode = "random"; // "order", "random", "wrongOnly"
+let currentIndex = 0;         // 順序模式用
+let wrongListQueue = [];      // 錯誤單字練習隊列
+
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMIｃｃｃ/gviz/tq?tqx=out:csv";
 
 // 載入資料
 function loadData() {
@@ -23,11 +26,10 @@ function loadData() {
       }));
       filteredWords = [...words];
 
-      // 建立下拉選單和快速按鈕
       createTypeSelect();
       createTypeButtons();
+      createModeSelect();
 
-      // 顯示第一題
       nextWord();
     },
     error: function(err) {
@@ -54,6 +56,47 @@ function createTypeSelect() {
   select.addEventListener("change", filterByType);
 }
 
+// 建立快速按鈕
+function createTypeButtons() {
+  const container = document.getElementById("typeButtons");
+  container.innerHTML = "";
+  const types = ["all", ...new Set(words.map(w => w.type))];
+
+  types.forEach(t => {
+    const btn = document.createElement("button");
+    btn.textContent = t === "all" ? "全部" : t;
+    btn.onclick = () => {
+      document.getElementById("typeSelect").value = t;
+      filterByType();
+    };
+    container.appendChild(btn);
+  });
+}
+
+// 建立模式切換下拉選單
+function createModeSelect() {
+  const modeSelect = document.getElementById("modeSelect");
+  modeSelect.innerHTML = "";
+  const modes = [
+    {value: "random", text: "隨機模式"},
+    {value: "order", text: "順序模式"},
+    {value: "wrongOnly", text: "錯題練習"}
+  ];
+  modes.forEach(m => {
+    const option = document.createElement("option");
+    option.value = m.value;
+    option.textContent = m.text;
+    modeSelect.appendChild(option);
+  });
+  modeSelect.value = practiceMode;
+
+  modeSelect.addEventListener("change", e => {
+    practiceMode = e.target.value;
+    currentIndex = 0;
+    nextWord();
+  });
+}
+
 // 篩選單字
 function filterByType() {
   const value = document.getElementById("typeSelect").value.trim();
@@ -73,18 +116,32 @@ function filterByType() {
 
 // 顯示下一題
 function nextWord() {
-  if (!filteredWords || filteredWords.length === 0) {
-    document.getElementById("word").textContent = "沒有單字可練習";
-    document.getElementById("options").innerHTML = "";
-    document.getElementById("result").textContent = "";
-    return;
+  let item;
+
+  if (practiceMode === "order") {
+    if (currentIndex >= filteredWords.length) currentIndex = 0;
+    item = filteredWords[currentIndex];
+    currentIndex++;
+  } else if (practiceMode === "random") {
+    item = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+  } else if (practiceMode === "wrongOnly") {
+    if (wrongListQueue.length === 0) {
+      document.getElementById("word").textContent = "錯誤單字列表空，請先練習新單字";
+      document.getElementById("options").innerHTML = "";
+      document.getElementById("result").textContent = "";
+      return;
+    }
+    item = wrongListQueue[Math.floor(Math.random() * wrongListQueue.length)];
   }
 
-  const item = filteredWords[Math.floor(Math.random() * filteredWords.length)];
   currentAnswer = item.meaning;
   document.getElementById("word").textContent = item.word;
 
-  // 生成 4 個選項
+  generateOptions(item);
+}
+
+// 生成 4 個選項
+function generateOptions(item) {
   let options = [item.meaning];
   while (options.length < 4) {
     const rand = filteredWords[Math.floor(Math.random() * filteredWords.length)].meaning;
@@ -111,12 +168,23 @@ function checkAnswer(selected, word) {
     document.getElementById("result").textContent = "✅ 正確！";
     correctCount++;
     if (!correctWords.includes(word)) correctWords.push(word);
+
+    // 錯題模式，答對就移除
+    wrongListQueue = wrongListQueue.filter(w => w !== word);
+
   } else {
     document.getElementById("result").textContent = "❌ 錯誤，正確答案是：" + currentAnswer;
     wrongCount++;
+
     if (!wrongWords.includes(word)) wrongWords.push(word);
+    if (!wrongListQueue.includes(word)) wrongListQueue.push(word);
   }
 
+  updateStats();
+}
+
+// 更新統計
+function updateStats() {
   document.getElementById("correctCount").textContent = correctCount;
   document.getElementById("wrongCount").textContent = wrongCount;
   document.getElementById("correctList").innerHTML = correctWords.map(w => `<li>${w}</li>`).join("");
@@ -127,25 +195,9 @@ function checkAnswer(selected, word) {
 function resetLists() {
   correctWords = [];
   wrongWords = [];
+  wrongListQueue = [];
   document.getElementById("correctList").innerHTML = "";
   document.getElementById("wrongList").innerHTML = "";
-}
-
-// 建立快速切換按鈕
-function createTypeButtons() {
-  const container = document.getElementById("typeButtons");
-  container.innerHTML = "";
-  const types = ["all", ...new Set(words.map(w => w.type))];
-
-  types.forEach(t => {
-    const btn = document.createElement("button");
-    btn.textContent = t === "all" ? "全部" : t;
-    btn.onclick = () => {
-      document.getElementById("typeSelect").value = t;
-      filterByType();
-    };
-    container.appendChild(btn);
-  });
 }
 
 // 初始化
