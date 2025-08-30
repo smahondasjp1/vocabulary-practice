@@ -27,14 +27,14 @@ h1, h3 {
 /* 選項按鈕 */
 #options {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap;     /* 自動換行 */
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
 }
 
 .option { 
-  flex: 1 1 40%; /* 最小 40% 寬度，剩餘空間自動調整 */
+  flex: 1 1 40%;       /* 桌面/iPad 使用 40% */
   min-width: 120px;
   max-width: 200px;
   padding: 10px; 
@@ -102,7 +102,8 @@ li {
   }
 
   #options button {
-    flex: 1 1 80%;
+    flex: 1 1 100%;    /* 小螢幕單列顯示 */
+    max-width: 100%;
     font-size: 0.9em;
   }
 
