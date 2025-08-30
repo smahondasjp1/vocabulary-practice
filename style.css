@@ -33,21 +33,58 @@ h1, h3 {
   margin-bottom: 20px;
 }
 
+/* 單字選項按鈕（藍色系） */
 .option {
   width: 100%;
-  max-width: 150px;   /* 按鈕最大寬度 */
-  padding: 10px;
+  max-width: 150px;
+  padding: 12px 10px;
   font-size: 1em;
   cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  background-color: #1E90FF;   /* 藍底 */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
 }
 
-/* 結果文字 */
-#result { 
-  margin: 20px; 
-  font-size: 1.2em; 
+.option:hover {
+  background-color: #1C86EE;
+  transform: translateY(-2px);
 }
 
-/* 下拉選單與模式選單容器 */
+.option:active {
+  background-color: #1874CD;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform: translateY(0);
+}
+
+/* 功能按鈕（黃色系） */
+button.secondary {
+  padding: 10px 15px;
+  font-size: 1em;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  background-color: #FFD700;   /* 黃底 */
+  color: #1E3A8A;              /* 深藍文字 */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+  margin: 5px;
+}
+
+button.secondary:hover {
+  background-color: #FFEC40;   /* 更亮黃 */
+  transform: translateY(-2px);
+}
+
+button.secondary:active {
+  background-color: #FFC200;   /* 深黃 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform: translateY(0);
+}
+
+/* 下拉選單容器 */
 .select-container {
   display: flex;
   flex-wrap: wrap;
@@ -56,7 +93,7 @@ h1, h3 {
   margin-bottom: 20px;
 }
 
-#typeSelect, #modeSelect {
+#typeSelect {
   flex: 1 1 150px;
   min-width: 120px;
   padding: 5px;
@@ -66,8 +103,6 @@ h1, h3 {
 /* 快速切換按鈕 */
 #typeButtons button {
   margin: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
 }
 
 /* 統計區塊 */
@@ -94,7 +129,7 @@ li {
   margin: 2px 0; 
 }
 
-/* RWD 調整：手機或小螢幕 */
+/* RWD 調整：小螢幕 */
 @media (max-width: 768px) {
   #word {
     font-size: 1.5em;
