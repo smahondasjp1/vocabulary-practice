@@ -10,7 +10,7 @@ let practiceMode = "random"; // "order", "random", "wrongOnly"
 let currentIndex = 0;         // 順序模式用
 let wrongListQueue = [];      // 錯誤單字練習隊列
 
-const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMIｃｃｃ/gviz/tq?tqx=out:csv";
+const sheetUrl = "https://docs.google.com/spreadsheets/d/1-HhKbscisIh5ou6Zy4Yj3XSCbFmKYEu8lf1DTbz8GMI/gviz/tq?tqx=out:csv";
 
 // 載入資料
 function loadData() {
