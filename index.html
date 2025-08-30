@@ -6,22 +6,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="container">
 
 <h1>單字選擇題</h1>
 
-<label for="typeSelect">選擇單字種類：</label>
-<select id="typeSelect" disabled onchange="filterByType()">
-  <option value="all">全部</option>
-</select>
+<div class="select-container">
+  <label for="typeSelect">選擇單字種類：</label>
+  <select id="typeSelect" disabled onchange="filterByType()">
+    <option value="all">全部</option>
+  </select>
+</div>
 
 <div id="typeButtons"></div> <!-- 快速切換按鈕 -->
 
 <div id="word">載入中...</div>
 <div id="options"></div>
 <div id="result"></div>
-<button onclick="nextWord()">下一題</button>
 
-<p>✅ 正確：<span id="correctCount">0</span> | ❌ 錯誤：<span id="wrongCount">0</span></p>
+<div class="button-container">
+  <button class="secondary" onclick="nextWord()">下一題</button>
+  <button class="secondary" onclick="resetLists()">清空答對/答錯列表</button>
+</div>
+
+<div id="stats">
+  <div>✅ 正確：<span id="correctCount">0</span></div>
+  <div>❌ 錯誤：<span id="wrongCount">0</span></div>
+</div>
 
 <h3>答對單字：</h3>
 <ul id="correctList"></ul>
@@ -29,11 +39,9 @@
 <h3>答錯單字：</h3>
 <ul id="wrongList"></ul>
 
-<button onclick="resetLists()">清空答對/答錯列表</button>
-
-  
 <!-- PapaParse CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="script.js"></script>
+</div>
 </body>
 </html>
